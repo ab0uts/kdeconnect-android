@@ -210,11 +210,15 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         if(missingPermissions.size > 0){
             ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), RESULT_NOTIFICATIONS_ENABLED)
         }
+
+        Crowdin.authorize(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
+
+        Crowdin.disconnectRealTimeUpdates()
     }
 
     private fun onPairResultFromNotification(deviceId: String?, pairStatus: String): String? {

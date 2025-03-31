@@ -348,6 +348,7 @@ dependencies {
     implementation(libs.rxjava)
 
     implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.13.1'
+    implementation 'com.github.crowdin.mobile-sdk-android:controls:1.13.1'
 }
 
 licenseReport {

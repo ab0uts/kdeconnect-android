@@ -31,6 +31,8 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
                 insets
             }
         }
+
+        initCrowdinControl(this)
     }
 
     open fun onWindowInsetsChanged(view: View, insets: WindowInsetsCompat) {

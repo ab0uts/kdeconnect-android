@@ -53,6 +53,21 @@ class KdeConnect : Application() {
         NotificationHelper.initializeChannels(this)
         LifecycleHelper.initializeObserver()
         loadRememberedDevicesFromSettings()
+
+        Crowdin.init(applicationContext,
+                CrowdinConfig.Builder()
+                        .withDistributionHash(your_distribution_hash)
+                        .withRealTimeUpdates()
+                        .withSourceLanguage(source_language)
+                        .withAuthConfig(AuthConfig(
+                                client_id,
+                                client_secret,
+                                request_auth_dialog
+                        ))
+                        .withOrganizationName(organization_name)  // required for Crowdin Enterprise
+                        .withNetworkType(network_type)            // optional
+                        .withUpdateInterval(interval_in_seconds)  // optional
+                        .build())
     }
 
     private fun setupSL4JLogging() {
@@ -103,32 +118,32 @@ class KdeConnect : Application() {
                 val device = Device(applicationContext, it)
                 val now = Date()
                 val x509Cert = device.certificate as X509Certificate
-                if(now < x509Cert.notBefore) {
-                    throw CertificateException("Certificate not effective yet: "+x509Cert.notBefore)
-                }
-                else if(now > x509Cert.notAfter) {
-                    throw CertificateException("Certificate already expired: "+x509Cert.notAfter)
+                if (now < x509Cert.notBefore) {
+                    throw CertificateException("Certificate not effective yet: " + x509Cert.notBefore)
+                } else if (now > x509Cert.notAfter) {
+                    throw CertificateException("Certificate already expired: " + x509Cert.notAfter)
                 }
                 devices[it] = device
                 device.addPairingCallback(devicePairingCallback)
             } catch (e: CertificateException) {
                 Log.w(
-                    "KdeConnect",
-                    "Couldn't load the certificate for a remembered device. Removing from trusted list.", e
+                        "KdeConnect",
+                        "Couldn't load the certificate for a remembered device. Removing from trusted list.", e
                 )
                 preferences.edit().remove(it).apply()
             }
         }
     }
+
     fun removeRememberedDevices() {
         // Log.e("BackgroundService", "Removing remembered trusted devices")
         val preferences = getSharedPreferences("trusted_devices", MODE_PRIVATE)
         val trustedDevices: Set<String> = preferences.all.keys
         trustedDevices.filter { preferences.getBoolean(it, false) }
-            .forEach {
-                Log.d("KdeConnect", "Removing devices: $it")
-                preferences.edit().remove(it).apply()
-            }
+                .forEach {
+                    Log.d("KdeConnect", "Removing devices: $it")
+                    preferences.edit().remove(it).apply()
+                }
     }
 
     private val devicePairingCallback: PairingCallback = object : PairingCallback {
