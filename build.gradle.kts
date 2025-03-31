@@ -346,6 +346,8 @@ dependencies {
     // For device controls
     implementation(libs.reactive.streams)
     implementation(libs.rxjava)
+
+    implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.13.1'
 }
 
 licenseReport {
